@@ -24,7 +24,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	AItemBase* GetCurrentItem();
-
+	
+	UFUNCTION(BlueprintCallable)
+	AItemBase* GetRecentlyAddedItem();
+	
 	// _Implemnetioatn :  Networked Function / BlueprintNativeEvent
 	
 protected:

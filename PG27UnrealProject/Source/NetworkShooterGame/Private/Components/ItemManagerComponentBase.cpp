@@ -22,6 +22,19 @@ AItemBase* UItemManagerComponentBase::GetCurrentItem()
 	return CurrentItem;
 }
 
+AItemBase* UItemManagerComponentBase::GetRecentlyAddedItem()
+{
+	if (Items.Num() > 0)
+	{
+		const FItemBaseData& LastItemData = Items.Last();
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Owner = GetOwner();
+
+		return GetWorld()->SpawnActor<AItemBase>(LastItemData.ClassToSpawn, SpawnParameters);
+	}
+	return nullptr;
+}
+
 // Called when the game starts
 void UItemManagerComponentBase::BeginPlay()
 {
@@ -45,6 +58,7 @@ void UItemManagerComponentBase::AddItem_SER_Implementation(FItemBaseData ItemTyp
 			Items.Add(ItemTypeToAdd);
 			if (Items.Num() == 1)
 			{
+				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "Item Added");
 				FActorSpawnParameters SpawnParameters;
 				SpawnParameters.Owner = GetOwner();
 				CurrentItem = GetWorld()->SpawnActor<AItemBase>(ItemTypeToAdd.ClassToSpawn, SpawnParameters);
