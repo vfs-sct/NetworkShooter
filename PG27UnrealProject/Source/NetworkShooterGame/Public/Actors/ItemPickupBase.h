@@ -28,6 +28,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemPickup")
 	TObjectPtr<UItemPickupData> PickupItemData;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemPickup")
+	float Price = 0;
 protected:
 	
 	// Called when the game starts or when spawned

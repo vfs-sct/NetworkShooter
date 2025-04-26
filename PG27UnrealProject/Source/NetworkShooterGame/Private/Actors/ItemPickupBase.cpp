@@ -35,6 +35,7 @@ void AItemPickupBase::BeginPlay()
 	if (PickupItemData && PickupItemData->PickupMesh)
 	{
 		ItemMeshComponent->SetStaticMesh(PickupItemData->PickupMesh);
+		Price = PickupItemData->Price; // on begin play set the price of the item
 	}
 	if (HasAuthority())
 	{
@@ -43,6 +44,8 @@ void AItemPickupBase::BeginPlay()
 	
 }
 
+// when overlap check if the player has enough currency
+// if player have enough currency pick up item
 void AItemPickupBase::OnItemCollisionBegin_SER_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (ANetworkShooterCharacter* ShooterCharacter = Cast<ANetworkShooterCharacter>(OtherActor))
@@ -56,7 +59,7 @@ void AItemPickupBase::OnItemCollisionBegin_SER_Implementation(UPrimitiveComponen
 					if (UItemManagerComponentBase* ItemManager = Cast<UItemManagerComponentBase>(PlayerState->GetComponentByClass(PickupItemData->ItemManagerClass)))
 					{
 						ItemManager->AddItem_SER( FItemBaseData::CreateItem(PickupItemData->InventoryItemBaseData));
-						GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "Pickup Item Successfully");
+						ShooterCharacter->NetworkCurrencyComponent->CurrentCurrency -= PickupItemData->Price; // decress the players currency
 					}
 				}
 			}
@@ -65,7 +68,6 @@ void AItemPickupBase::OnItemCollisionBegin_SER_Implementation(UPrimitiveComponen
 		else
 		{
 			float t = ShooterCharacter->NetworkCurrencyComponent->CurrentCurrency;;
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "Pickup Item Failed");
 		}
 	}
 }
